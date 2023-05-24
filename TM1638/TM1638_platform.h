@@ -71,18 +71,18 @@ extern "C" {
 #elif defined(TM1638_PLATFORM_STM32)
 /**
  * @brief  Specify IO Pins of STM32 connected to TM1638
- * In this example the pins that are used are 
+ * In this example the pins that are used are
  * PC13 - Clock
  * PC12 - Data I/O
  * PC11 - Strobe 0
- * 
+ *
  */
 #define TM1638_CLK_GPIO     GPIOC
-#define TM1638_CLK_PIN      GPIO_PIN_13
+#define TM1638_CLK_PIN      GPIO_PIN_10
 #define TM1638_DIO_GPIO     GPIOC
-#define TM1638_DIO_PIN      GPIO_PIN_12
+#define TM1638_DIO_PIN      GPIO_PIN_11
 #define TM1638_STB_GPIO     GPIOC
-#define TM1638_STB_PIN      GPIO_PIN_11
+#define TM1638_STB_PIN      GPIO_PIN_12
 
 #elif defined(TM1638_PLATFORM_ESP32_IDF)
 /**
