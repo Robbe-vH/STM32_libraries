@@ -66,22 +66,22 @@
  */
 const uint8_t HexTo7Seg[16] =
 {
-  0x3F, // 0
-  0x06, // 1
-  0x5B, // 2
-  0x4F, // 3
-  0x66, // 4
-  0x6D, // 5
-  0x7D, // 6
-  0x07, // 7
-  0x7F, // 8
-  0x6F, // 9
-  0x77, // A
-  0x7c, // b
-  0x39, // C
-  0x5E, // d
-  0x79, // E
-  0x71  // F
+		0x3F, // 0
+		0x06, // 1
+		0x5B, // 2
+		0x4F, // 3
+		0x66, // 4
+		0x6D, // 5
+		0x7D, // 6
+		0x07, // 7
+		0x7F, // 8
+		0x6F, // 9
+		0x77, // A
+		0x7c, // b
+		0x39, // C
+		0x5E, // d
+		0x79, // E
+		0x71  // F
 };
 
 
@@ -95,92 +95,92 @@ const uint8_t HexTo7Seg[16] =
 static inline void
 TM1638_StartComunication(TM1638_Handler_t *Handler)
 {
-  Handler->StbWrite(0);
+	Handler->StbWrite(0);
 }
 
 static inline void
 TM1638_StopComunication(TM1638_Handler_t *Handler)
 {
-  Handler->StbWrite(1);
+	Handler->StbWrite(1);
 }
 
 static void
 TM1638_WriteBytes(TM1638_Handler_t *Handler,
-                  const uint8_t *Data, uint8_t NumOfBytes)
+		const uint8_t *Data, uint8_t NumOfBytes)
 {
-  uint8_t i, j, Buff;
+	uint8_t i, j, Buff;
 
-  Handler->DioConfigOut();
+	Handler->DioConfigOut();
 
-  for (j = 0; j < NumOfBytes; j++)
-  {
-    for (i = 0, Buff = Data[j]; i < 8; ++i, Buff >>= 1)
-    {
-      Handler->ClkWrite(0);
-      Handler->DelayUs(1);
-      Handler->DioWrite(Buff & 0x01);
-      Handler->ClkWrite(1);
-      Handler->DelayUs(1);
-    }
-  }
+	for (j = 0; j < NumOfBytes; j++)
+	{
+		for (i = 0, Buff = Data[j]; i < 8; ++i, Buff >>= 1)
+		{
+			Handler->ClkWrite(0);
+			Handler->DelayUs(1);
+			Handler->DioWrite(Buff & 0x01);
+			Handler->ClkWrite(1);
+			Handler->DelayUs(1);
+		}
+	}
 }
 
 static void
 TM1638_ReadBytes(TM1638_Handler_t *Handler,
-                 uint8_t *Data, uint8_t NumOfBytes)
+		uint8_t *Data, uint8_t NumOfBytes)
 {
-  uint8_t i, j, Buff;
+	uint8_t i, j, Buff;
 
-  Handler->DioConfigIn();
+	Handler->DioConfigIn();
 
-  Handler->DelayUs(5);
+	Handler->DelayUs(5);
 
-  for (j = 0; j < NumOfBytes; j++)
-  {
-    for (i = 0, Buff = 0; i < 8; i++)
-    {
-      Handler->ClkWrite(0);
-      Handler->DelayUs(1);
-      Handler->ClkWrite(1);
-      Buff |= (Handler->DioRead() << i);
-      Handler->DelayUs(1);
-    }
+	for (j = 0; j < NumOfBytes; j++)
+	{
+		for (i = 0, Buff = 0; i < 8; i++)
+		{
+			Handler->ClkWrite(0);
+			Handler->DelayUs(1);
+			Handler->ClkWrite(1);
+			Buff |= (Handler->DioRead() << i);
+			Handler->DelayUs(1);
+		}
 
-    Data[j] = Buff;
-    Handler->DelayUs(2);
-  }
+		Data[j] = Buff;
+		Handler->DelayUs(2);
+	}
 }
 
 static void
 TM1638_SetMultipleDisplayRegister(TM1638_Handler_t *Handler,
-                                  const uint8_t *DigitData,
-                                  uint8_t StartAddr, uint8_t Count)
+		const uint8_t *DigitData,
+		uint8_t StartAddr, uint8_t Count)
 {
-  uint8_t Data = DataInstructionSet | WriteDataToRegister |
-                 AutoAddressAdd | NormalMode;
+	uint8_t Data = DataInstructionSet | WriteDataToRegister |
+			AutoAddressAdd | NormalMode;
 
-  TM1638_StartComunication(Handler);
-  TM1638_WriteBytes(Handler, &Data, 1);
-  TM1638_StopComunication(Handler);
+	TM1638_StartComunication(Handler);
+	TM1638_WriteBytes(Handler, &Data, 1);
+	TM1638_StopComunication(Handler);
 
-  Data = AddressInstructionSet | StartAddr;
+	Data = AddressInstructionSet | StartAddr;
 
-  TM1638_StartComunication(Handler);
-  TM1638_WriteBytes(Handler, &Data, 1);
-  TM1638_WriteBytes(Handler, DigitData, Count);
-  TM1638_StopComunication(Handler);
+	TM1638_StartComunication(Handler);
+	TM1638_WriteBytes(Handler, &Data, 1);
+	TM1638_WriteBytes(Handler, DigitData, Count);
+	TM1638_StopComunication(Handler);
 }
 
 static void
 TM1638_ScanKeyRegs(TM1638_Handler_t *Handler, uint8_t *KeyRegs)
 {
-  uint8_t Data = DataInstructionSet | ReadKeyScanData |
-                 AutoAddressAdd | NormalMode;
+	uint8_t Data = DataInstructionSet | ReadKeyScanData |
+			AutoAddressAdd | NormalMode;
 
-  TM1638_StartComunication(Handler);
-  TM1638_WriteBytes(Handler, &Data, 1);
-  TM1638_ReadBytes(Handler, KeyRegs, 4);
-  TM1638_StopComunication(Handler);
+	TM1638_StartComunication(Handler);
+	TM1638_WriteBytes(Handler, &Data, 1);
+	TM1638_ReadBytes(Handler, KeyRegs, 4);
+	TM1638_StopComunication(Handler);
 }
 
 
@@ -206,21 +206,21 @@ TM1638_ScanKeyRegs(TM1638_Handler_t *Handler, uint8_t *KeyRegs)
 TM1638_Result_t
 TM1638_Init(TM1638_Handler_t *Handler, uint8_t Type)
 {
-  Handler->DisplayType = TM1638DisplayTypeComCathode;
+	Handler->DisplayType = TM1638DisplayTypeComCathode;
 
 #if TM1638_SUPPORT_COM_ANODE
-  for (uint8_t i = 0; i < 16; i++)
-  {
-    Handler->DisplayRegister[i] = 0;
-  }
-  if (Type == TM1638DisplayTypeComCathode)
-    Handler->DisplayType = TM1638DisplayTypeComCathode;
-  else
-    Handler->DisplayType = TM1638DisplayTypeComAnode;
+	for (uint8_t i = 0; i < 16; i++)
+	{
+		Handler->DisplayRegister[i] = 0;
+	}
+	if (Type == TM1638DisplayTypeComCathode)
+		Handler->DisplayType = TM1638DisplayTypeComCathode;
+	else
+		Handler->DisplayType = TM1638DisplayTypeComAnode;
 #endif
 
-  Handler->PlatformInit();
-  return TM1638_OK;
+	Handler->PlatformInit();
+	return TM1638_OK;
 }
 
 /**
@@ -232,8 +232,8 @@ TM1638_Init(TM1638_Handler_t *Handler, uint8_t Type)
 TM1638_Result_t
 TM1638_DeInit(TM1638_Handler_t *Handler)
 {
-  Handler->PlatformDeInit();
-  return TM1638_OK;
+	Handler->PlatformDeInit();
+	return TM1638_OK;
 }
 
 
@@ -266,17 +266,17 @@ TM1638_DeInit(TM1638_Handler_t *Handler)
  */
 TM1638_Result_t
 TM1638_ConfigDisplay(TM1638_Handler_t *Handler,
-                     uint8_t Brightness, uint8_t DisplayState)
+		uint8_t Brightness, uint8_t DisplayState)
 {
-  uint8_t Data = DisplayControlInstructionSet;
-  Data |= Brightness & 0x07;
-  Data |= (DisplayState) ? (ShowTurnOn) : (ShowTurnOff);
+	uint8_t Data = DisplayControlInstructionSet;
+	Data |= Brightness & 0x07;
+	Data |= (DisplayState) ? (ShowTurnOn) : (ShowTurnOff);
 
-  TM1638_StartComunication(Handler);
-  TM1638_WriteBytes(Handler, &Data, 1);
-  TM1638_StopComunication(Handler);
+	TM1638_StartComunication(Handler);
+	TM1638_WriteBytes(Handler, &Data, 1);
+	TM1638_StopComunication(Handler);
 
-  return TM1638_OK;
+	return TM1638_OK;
 }
 
 
@@ -296,15 +296,15 @@ TM1638_ConfigDisplay(TM1638_Handler_t *Handler,
  */
 TM1638_Result_t
 TM1638_SetSingleDigit(TM1638_Handler_t *Handler,
-                      uint8_t DigitData, uint8_t DigitPos)
+		uint8_t DigitData, uint8_t DigitPos)
 {
-  if (Handler->DisplayType == TM1638DisplayTypeComCathode)
-    TM1638_SetMultipleDisplayRegister(Handler, &DigitData, DigitPos, 1);
+	if (Handler->DisplayType == TM1638DisplayTypeComCathode)
+		TM1638_SetMultipleDisplayRegister(Handler, &DigitData, DigitPos, 1);
 #if (TM1638_SUPPORT_COM_ANODE)
-  else
-    TM1638_SetMultipleDigit(Handler, &DigitData, DigitPos, 1);
+	else
+		TM1638_SetMultipleDigit(Handler, &DigitData, DigitPos, 1);
 #endif
-  return TM1638_OK;
+	return TM1638_OK;
 }
 
 
@@ -325,50 +325,65 @@ TM1638_SetSingleDigit(TM1638_Handler_t *Handler,
  */
 TM1638_Result_t
 TM1638_SetMultipleDigit(TM1638_Handler_t *Handler, const uint8_t *DigitData,
-                        uint8_t StartAddr, uint8_t Count)
+		uint8_t StartAddr, uint8_t Count)
 {
-  uint8_t Shift = 0;
-  uint8_t DigitDataBuff = 0;
-  uint8_t i = 0, j = 0;
+	uint8_t Shift = 0;
+	uint8_t DigitDataBuff = 0;
+	uint8_t i = 0, j = 0;
 
-  if (Handler->DisplayType == TM1638DisplayTypeComCathode)
-    TM1638_SetMultipleDisplayRegister(Handler, DigitData, StartAddr, Count);
+	if (Handler->DisplayType == TM1638DisplayTypeComCathode)
+		TM1638_SetMultipleDisplayRegister(Handler, DigitData, StartAddr, Count);
 #if (TM1638_SUPPORT_COM_ANODE)
-  else
-  {
-    for (j = 0; j < Count; j++)
-    {
-      DigitDataBuff = DigitData[j];
+	else
+	{
+		for (j = 0; j < Count; j++)
+		{
+			DigitDataBuff = DigitData[j];
 
-      if ((j + StartAddr) >= 0 && (j + StartAddr) <= 7)
-      {
-        Shift = j + StartAddr;
-        i = 0;
-      }
-      else if ((j + StartAddr) == 8 || (j + StartAddr) == 9)
-      {
-        Shift = (j + StartAddr) - 8;
-        i = 1;
-      }
-      else
-      {
-        i = 16;
-      }
+			if ((j + StartAddr) >= 0 && (j + StartAddr) <= 7)
+			{
+				Shift = j + StartAddr;
+				i = 0;
+			}
+			else if ((j + StartAddr) == 8 || (j + StartAddr) == 9)
+			{
+				Shift = (j + StartAddr) - 8;
+				i = 1;
+			}
+			else
+			{
+				i = 16;
+			}
 
-      for (; i < 16; i += 2, DigitDataBuff >>= 1)
-      {
-        if (DigitDataBuff & 0x01)
-          Handler->DisplayRegister[i] |= (1 << Shift);
-        else
-          Handler->DisplayRegister[i] &= ~(1 << Shift);
-      }
-    }
-    TM1638_SetMultipleDisplayRegister(Handler, Handler->DisplayRegister, 0, 16);
-  }
+			for (; i < 16; i += 2, DigitDataBuff >>= 1)
+			{
+				if (DigitDataBuff & 0x01)
+					Handler->DisplayRegister[i] |= (1 << Shift);
+				else
+					Handler->DisplayRegister[i] &= ~(1 << Shift);
+			}
+		}
+		TM1638_SetMultipleDisplayRegister(Handler, Handler->DisplayRegister, 0, 16);
+	}
 #endif
 
-  return TM1638_OK;
+return TM1638_OK;
 }
+
+
+TM1638_Result_t
+TM1638_ClearDisplay(TM1638_Handler_t *Handler) {
+	for (int i = 0; i < 16; i += 2)
+	{
+		TM1638_SetSingleDigit(Handler, 0, i); // turn all the displays off
+	}
+	for (int i =1; i < 16; i += 2)
+	{
+		TM1638_SetSingleDigit(Handler, 0, i); // turn all the LEDs off
+	}
+	return TM1638_OK;
+}
+
 
 /**
  * @brief  Set data to multiple digits in 7-segment format
@@ -386,58 +401,58 @@ TM1638_SetMultipleDigit(TM1638_Handler_t *Handler, const uint8_t *DigitData,
  */
 TM1638_Result_t
 TM1638_SetSingleDigit_HEX(TM1638_Handler_t *Handler,
-                          uint8_t DigitData, uint8_t DigitPos)
+		uint8_t DigitData, uint8_t DigitPos)
 {
-  uint8_t DigitDataHEX = 0;
-  uint8_t DecimalPoint = DigitData & 0x80;
+	uint8_t DigitDataHEX = 0;
+	uint8_t DecimalPoint = DigitData & 0x80;
 
-  DigitData &= 0x7F;
+	DigitData &= 0x7F;
 
-  if (DigitData <= 15)
-  {
-    DigitDataHEX = HexTo7Seg[DigitData] | DecimalPoint;
-  }
-  else
-  {
-    switch (DigitData)
-    {
-    case 'A':
-    case 'a':
-      DigitDataHEX = HexTo7Seg[0x0A] | DecimalPoint;
-      break;
+	if (DigitData <= 15)
+	{
+		DigitDataHEX = HexTo7Seg[DigitData] | DecimalPoint;
+	}
+	else
+	{
+		switch (DigitData)
+		{
+		case 'A':
+		case 'a':
+			DigitDataHEX = HexTo7Seg[0x0A] | DecimalPoint;
+			break;
 
-    case 'B':
-    case 'b':
-      DigitDataHEX = HexTo7Seg[0x0B] | DecimalPoint;
-      break;
+		case 'B':
+		case 'b':
+			DigitDataHEX = HexTo7Seg[0x0B] | DecimalPoint;
+			break;
 
-    case 'C':
-    case 'c':
-      DigitDataHEX = HexTo7Seg[0x0C] | DecimalPoint;
-      break;
+		case 'C':
+		case 'c':
+			DigitDataHEX = HexTo7Seg[0x0C] | DecimalPoint;
+			break;
 
-    case 'D':
-    case 'd':
-      DigitDataHEX = HexTo7Seg[0x0D] | DecimalPoint;
-      break;
+		case 'D':
+		case 'd':
+			DigitDataHEX = HexTo7Seg[0x0D] | DecimalPoint;
+			break;
 
-    case 'E':
-    case 'e':
-      DigitDataHEX = HexTo7Seg[0x0E] | DecimalPoint;
-      break;
+		case 'E':
+		case 'e':
+			DigitDataHEX = HexTo7Seg[0x0E] | DecimalPoint;
+			break;
 
-    case 'F':
-    case 'f':
-      DigitDataHEX = HexTo7Seg[0x0F] | DecimalPoint;
-      break;
+		case 'F':
+		case 'f':
+			DigitDataHEX = HexTo7Seg[0x0F] | DecimalPoint;
+			break;
 
-    default:
-      DigitDataHEX = 0;
-      break;
-    }
-  }
+		default:
+			DigitDataHEX = 0;
+			break;
+		}
+	}
 
-  return TM1638_SetSingleDigit(Handler, DigitDataHEX, DigitPos);
+	return TM1638_SetSingleDigit(Handler, DigitDataHEX, DigitPos);
 }
 
 
@@ -460,62 +475,62 @@ TM1638_SetSingleDigit_HEX(TM1638_Handler_t *Handler,
  */
 TM1638_Result_t
 TM1638_SetMultipleDigit_HEX(TM1638_Handler_t *Handler, const uint8_t *DigitData,
-                            uint8_t StartAddr, uint8_t Count)
+		uint8_t StartAddr, uint8_t Count)
 {
-  uint8_t DigitDataHEX[10];
-  uint8_t DecimalPoint = 0;
+	uint8_t DigitDataHEX[10];
+	uint8_t DecimalPoint = 0;
 
-  for (uint8_t i = 0; i < Count; i++)
-  {
-    DecimalPoint = DigitData[i] & 0x80;
+	for (uint8_t i = 0; i < Count; i++)
+	{
+		DecimalPoint = DigitData[i] & 0x80;
 
-    if ((DigitData[i] & 0x7F) >= 0 && (DigitData[i] & 0x7F) <= 15)
-    {
-      DigitDataHEX[i] = HexTo7Seg[DigitData[i] & 0x7F] | DecimalPoint;
-    }
-    else
-    {
-      switch (DigitData[i] & 0x7F)
-      {
-      case 'A':
-      case 'a':
-        DigitDataHEX[i] = HexTo7Seg[0x0A] | DecimalPoint;
-        break;
+		if ((DigitData[i] & 0x7F) >= 0 && (DigitData[i] & 0x7F) <= 15)
+		{
+			DigitDataHEX[i] = HexTo7Seg[DigitData[i] & 0x7F] | DecimalPoint;
+		}
+		else
+		{
+			switch (DigitData[i] & 0x7F)
+			{
+			case 'A':
+			case 'a':
+				DigitDataHEX[i] = HexTo7Seg[0x0A] | DecimalPoint;
+				break;
 
-      case 'B':
-      case 'b':
-        DigitDataHEX[i] = HexTo7Seg[0x0B] | DecimalPoint;
-        break;
+			case 'B':
+			case 'b':
+				DigitDataHEX[i] = HexTo7Seg[0x0B] | DecimalPoint;
+				break;
 
-      case 'C':
-      case 'c':
-        DigitDataHEX[i] = HexTo7Seg[0x0C] | DecimalPoint;
-        break;
+			case 'C':
+			case 'c':
+				DigitDataHEX[i] = HexTo7Seg[0x0C] | DecimalPoint;
+				break;
 
-      case 'D':
-      case 'd':
-        DigitDataHEX[i] = HexTo7Seg[0x0D] | DecimalPoint;
-        break;
+			case 'D':
+			case 'd':
+				DigitDataHEX[i] = HexTo7Seg[0x0D] | DecimalPoint;
+				break;
 
-      case 'E':
-      case 'e':
-        DigitDataHEX[i] = HexTo7Seg[0x0E] | DecimalPoint;
-        break;
+			case 'E':
+			case 'e':
+				DigitDataHEX[i] = HexTo7Seg[0x0E] | DecimalPoint;
+				break;
 
-      case 'F':
-      case 'f':
-        DigitDataHEX[i] = HexTo7Seg[0x0F] | DecimalPoint;
-        break;
+			case 'F':
+			case 'f':
+				DigitDataHEX[i] = HexTo7Seg[0x0F] | DecimalPoint;
+				break;
 
-      default:
-        DigitDataHEX[i] = 0;
-        break;
-      }
-    }
-  }
+			default:
+				DigitDataHEX[i] = 0;
+				break;
+			}
+		}
+	}
 
-  return TM1638_SetMultipleDigit(Handler,
-                                 (const uint8_t *)DigitDataHEX, StartAddr, Count);
+	return TM1638_SetMultipleDigit(Handler,
+			(const uint8_t *)DigitDataHEX, StartAddr, Count);
 }
 
 
@@ -546,31 +561,31 @@ TM1638_SetMultipleDigit_HEX(TM1638_Handler_t *Handler, const uint8_t *DigitData,
 TM1638_Result_t
 TM1638_ScanKeys(TM1638_Handler_t *Handler, uint32_t *Keys)
 {
-  uint8_t KeyRegs[4];
-  uint32_t KeysBuff = 0;
-  uint8_t Kn = 0x01;
+	uint8_t KeyRegs[4];
+	uint32_t KeysBuff = 0;
+	uint8_t Kn = 0x01;
 
-  TM1638_ScanKeyRegs(Handler, KeyRegs);
+	TM1638_ScanKeyRegs(Handler, KeyRegs);
 
-  for (uint8_t i = 0; i < 3; i++)
-  {
-    for (int8_t i = 3; i >= 0; i--)
-    {
-      KeysBuff <<= 1;
+	for (uint8_t i = 0; i < 3; i++)
+	{
+		for (int8_t i = 3; i >= 0; i--)
+		{
+			KeysBuff <<= 1;
 
-      if (KeyRegs[i] & (Kn << 4))
-        KeysBuff |= 1;
+			if (KeyRegs[i] & (Kn << 4))
+				KeysBuff |= 1;
 
-      KeysBuff <<= 1;
+			KeysBuff <<= 1;
 
-      if (KeyRegs[i] & Kn)
-        KeysBuff |= 1;
-    }
+			if (KeyRegs[i] & Kn)
+				KeysBuff |= 1;
+		}
 
-    Kn <<= 1;
-  }
+		Kn <<= 1;
+	}
 
-  *Keys = KeysBuff;
+	*Keys = KeysBuff;
 
-  return TM1638_OK;
+	return TM1638_OK;
 }
