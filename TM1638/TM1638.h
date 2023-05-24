@@ -197,6 +197,10 @@ TM1638_ConfigDisplay(TM1638_Handler_t *Handler,
  * @retval TM1638_Result_t
  *         - TM1638_OK: Operation was successful
  */
+
+TM1638_Result_t
+TM1638_ClearDisplay(TM1638_Handler_t *Handler);
+
 TM1638_Result_t
 TM1638_SetSingleDigit(TM1638_Handler_t *Handler,
                       uint8_t DigitData, uint8_t DigitPos);
